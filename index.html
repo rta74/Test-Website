@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ryan Thomas Personal Portfolio</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f7f1e8;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow: hidden;
+      padding: 40px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 1200px;
+      text-align: center;
+    }
+
+    .heading {
+      font-size: clamp(2.2rem, 7vw, 6rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      color: #111;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.22em;
+      position: relative;
+    }
+
+    .word {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .portfolio-wrap {
+      position: relative;
+      display: inline-block;
+      min-width: 5.8em;
+      height: 1em;
+    }
+
+    .portfolio-word {
+      position: relative;
+      display: inline-block;
+      transform-origin: left center;
+      transition:
+        transform 0.45s ease,
+        opacity 0.45s ease,
+        filter 0.45s ease;
+    }
+
+    .portfolio-word.eaten {
+      transform: scaleX(0.02);
+      opacity: 0;
+      filter: blur(4px);
+    }
+
+    .dino {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translate(18px, -50%);
+      width: clamp(70px, 8vw, 120px);
+      height: auto;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .dino svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .jaw-top,
+    .jaw-bottom {
+      transform-origin: left center;
+      transition: transform 0.18s ease;
+    }
+
+    .dino.chomp .jaw-top {
+      transform: rotate(-10deg);
+    }
+
+    .dino.chomp .jaw-bottom {
+      transform: rotate(12deg);
+    }
+
+    .subtext {
+      margin-top: 28px;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: #555;
+      font-weight: 600;
+    }
+
+    .replay-btn {
+      margin-top: 30px;
+      border: 2px solid #111;
+      background: #fff;
+      color: #111;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .replay-btn:hover {
+      transform: translateY(-2px);
+      background: #111;
+      color: #fff;
+    }
+
+    @media (max-width: 700px) {
+      .heading {
+        line-height: 1.05;
+      }
+
+      .portfolio-wrap {
+        min-width: 6.1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1 class="heading">
+      <span class="word">RYAN</span>
+      <span class="word">THOMAS</span>
+      <span class="word">PERSONAL</span>
+
+      <span class="portfolio-wrap">
+        <span class="portfolio-word" id="portfolioWord">PORTFOLIO</span>
+
+        <span class="dino" id="dino">
+          <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- body/head -->
+            <path d="M55 78
+                     C55 35, 100 15, 145 20
+                     C185 24, 208 48, 205 82
+                     C203 108, 183 124, 152 126
+                     L108 126
+                     C92 126, 79 118, 72 107
+                     L58 108
+                     C50 108, 44 102, 44 94
+                     C44 86, 49 81, 55 78Z"
+                  fill="#77c66e" stroke="#111" stroke-width="5"/>
+
+            <!-- eye -->
+            <circle cx="145" cy="50" r="8" fill="#111"/>
+            <circle cx="148" cy="47" r="2" fill="#fff"/>
+
+            <!-- nostril -->
+            <circle cx="183" cy="63" r="3.8" fill="#111"/>
+
+            <!-- top jaw -->
+            <g class="jaw-top">
+              <path d="M100 72
+                       C138 70, 175 70, 205 76
+                       C196 87, 172 92, 148 93
+                       L100 92Z"
+                    fill="#77c66e" stroke="#111" stroke-width="5"/>
+              <!-- teeth -->
+              <path d="M116 91 L122 101 L128 91
+                       M132 91 L138 101 L144 91
+                       M148 90 L154 100 L160 90
+                       M164 88 L170 98 L176 88"
+                    fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+            </g>
+
+            <!-- bottom jaw -->
+            <g class="jaw-bottom">
+              <path d="M100 92
+                       C135 94, 169 98, 196 110
+                       C181 118, 159 121, 136 121
+                       L101 118Z"
+                    fill="#96de89" stroke="#111" stroke-width="5"/>
+              <!-- teeth -->
+              <path d="M116 94 L122 85 L128 94
+                       M132 96 L138 86 L144 96
+                       M148 99 L154 89 L160 99
+                       M164 103 L170 93 L176 103"
+                    fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+            </g>
+
+            <!-- little arm -->
+            <path d="M95 103 C84 103, 78 108, 75 118"
+                  fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </span>
+    </h1>
+
+    <p class="subtext">A playful starting screen for your portfolio.</p>
+
+    <button class="replay-btn" onclick="runEatAnimation()">Replay chomp</button>
+  </div>
+
+  <script>
+    const portfolioWord = document.getElementById("portfolioWord");
+    const dino = document.getElementById("dino");
+
+    function resetAnimation() {
+      portfolioWord.classList.remove("eaten");
+      dino.classList.remove("chomp");
+    }
+
+    function runEatAnimation() {
+      resetAnimation();
+
+      setTimeout(() => {
+        dino.classList.add("chomp");
+      }, 500);
+
+      setTimeout(() => {
+        portfolioWord.classList.add("eaten");
+      }, 640);
+
+      setTimeout(() => {
+        dino.classList.remove("chomp");
+      }, 900);
+    }
+
+    // run once on load
+    window.addEventListener("load", () => {
+      setTimeout(runEatAnimation, 500);
+    });
+  </script>
+</body>
+</html>
