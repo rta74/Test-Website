@@ -6,242 +6,471 @@
   <title>Ryan Thomas Personal Portfolio</title>
 
   <style>
+    :root {
+      --bg: #f4f2ea;
+      --ink: #242222;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f7f1e8;
-      font-family: Arial, Helvetica, sans-serif;
-      overflow: hidden;
-      padding: 40px;
+      min-height: 260vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      overflow-x: hidden;
     }
 
-    .wrapper {
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 20;
       width: 100%;
-      max-width: 1200px;
-      text-align: center;
-    }
-
-    .heading {
-      font-size: clamp(2.2rem, 7vw, 6rem);
-      font-weight: 900;
-      line-height: 1;
-      letter-spacing: -0.05em;
-      color: #111;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      gap: 0.22em;
-      position: relative;
-    }
-
-    .word {
-      display: inline-block;
-      white-space: nowrap;
-    }
-
-    .portfolio-wrap {
-      position: relative;
-      display: inline-block;
-      min-width: 5.8em;
-      height: 1em;
-    }
-
-    .portfolio-word {
-      position: relative;
-      display: inline-block;
-      transform-origin: left center;
-      transition:
-        transform 0.45s ease,
-        opacity 0.45s ease,
-        filter 0.45s ease;
-    }
-
-    .portfolio-word.eaten {
-      transform: scaleX(0.02);
-      opacity: 0;
-      filter: blur(4px);
-    }
-
-    .dino {
-      position: absolute;
-      top: 50%;
-      left: 100%;
-      transform: translate(18px, -50%);
-      width: clamp(70px, 8vw, 120px);
-      height: auto;
-      z-index: 5;
+      padding: 48px 64px;
       pointer-events: none;
     }
 
-    .dino svg {
+    .logo {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      font-size: 1.05rem;
+      transform: rotate(-7deg);
+    }
+
+    .menu {
+      font-size: 1.45rem;
+      font-weight: 700;
+    }
+
+    .stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .title-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .title {
+      font-weight: 900;
+      font-size: clamp(3.4rem, 9vw, 9rem);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+    }
+
+    .line {
+      display: block;
+      white-space: nowrap;
+    }
+
+    .portfolio-line {
+      position: relative;
+      display: inline-flex;
+      justify-content: center;
+    }
+
+    .letter {
+      display: inline-block;
+      transform-origin: center;
+      transition:
+        opacity 0.22s ease,
+        transform 0.42s cubic-bezier(.2,.8,.2,1);
+      will-change: transform, opacity;
+    }
+
+    .letter.eaten {
+      opacity: 0;
+      transform:
+        translate(
+          calc(var(--x, 0) * 1px),
+          calc(var(--y, 0) * 1px)
+        )
+        rotate(calc(var(--r, 0) * 1deg))
+        scale(0.35);
+    }
+
+    .dino-wrap {
+      position: absolute;
+      z-index: 8;
+      width: min(760px, 58vw);
+      left: 52%;
+      bottom: -72%;
+      transform:
+        translate3d(0, 0, 0)
+        scale(1);
+      transition: none;
+      will-change: transform, bottom, left;
+      pointer-events: none;
+    }
+
+    .dino {
       width: 100%;
       height: auto;
-      display: block;
+      overflow: visible;
     }
 
-    .jaw-top,
-    .jaw-bottom {
-      transform-origin: left center;
-      transition: transform 0.18s ease;
+    .dino path,
+    .dino circle,
+    .dino ellipse,
+    .dino line,
+    .dino polyline {
+      vector-effect: non-scaling-stroke;
     }
 
-    .dino.chomp .jaw-top {
-      transform: rotate(-10deg);
+    .jaw {
+      transform-box: fill-box;
+      transform-origin: 38% 48%;
+      transition: transform 0.08s linear;
     }
 
-    .dino.chomp .jaw-bottom {
-      transform: rotate(12deg);
+    .bite-mark {
+      position: absolute;
+      z-index: 7;
+      left: 49%;
+      top: 62%;
+      width: 90px;
+      height: 70px;
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(-16deg) scale(0.8);
+      pointer-events: none;
     }
 
-    .subtext {
-      margin-top: 28px;
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      color: #555;
-      font-weight: 600;
+    .bite-mark.active {
+      opacity: 1;
     }
 
-    .replay-btn {
-      margin-top: 30px;
-      border: 2px solid #111;
-      background: #fff;
-      color: #111;
-      padding: 12px 18px;
+    .dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: 0.2s ease;
+      background: #bf3434;
     }
 
-    .replay-btn:hover {
-      transform: translateY(-2px);
-      background: #111;
-      color: #fff;
+    .dot:nth-child(1) { left: 5px; top: 31px; }
+    .dot:nth-child(2) { left: 18px; top: 19px; width: 4px; height: 4px; }
+    .dot:nth-child(3) { left: 28px; top: 44px; width: 9px; height: 9px; }
+    .dot:nth-child(4) { left: 43px; top: 29px; width: 5px; height: 5px; }
+    .dot:nth-child(5) { left: 58px; top: 41px; width: 7px; height: 7px; }
+    .dot:nth-child(6) { left: 72px; top: 24px; width: 4px; height: 4px; }
+
+    .scroll-hint {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      z-index: 15;
+      transform: translateX(-50%);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      transition: opacity 0.25s ease;
     }
 
-    @media (max-width: 700px) {
-      .heading {
-        line-height: 1.05;
+    .scroll-hint.hidden {
+      opacity: 0;
+    }
+
+    @media (max-width: 800px) {
+      .top-bar {
+        padding: 32px 28px;
       }
 
-      .portfolio-wrap {
-        min-width: 6.1em;
+      .menu {
+        font-size: 1.15rem;
+      }
+
+      .title {
+        font-size: clamp(3rem, 15vw, 6rem);
+      }
+
+      .line {
+        white-space: normal;
+      }
+
+      .dino-wrap {
+        width: 92vw;
+        left: 28%;
       }
     }
   </style>
 </head>
+
 <body>
-  <div class="wrapper">
-    <h1 class="heading">
-      <span class="word">RYAN</span>
-      <span class="word">THOMAS</span>
-      <span class="word">PERSONAL</span>
+  <header class="top-bar">
+    <div class="logo">RYAN</div>
+    <div class="menu">Menu</div>
+  </header>
 
-      <span class="portfolio-wrap">
-        <span class="portfolio-word" id="portfolioWord">PORTFOLIO</span>
-
-        <span class="dino" id="dino">
-          <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <!-- body/head -->
-            <path d="M55 78
-                     C55 35, 100 15, 145 20
-                     C185 24, 208 48, 205 82
-                     C203 108, 183 124, 152 126
-                     L108 126
-                     C92 126, 79 118, 72 107
-                     L58 108
-                     C50 108, 44 102, 44 94
-                     C44 86, 49 81, 55 78Z"
-                  fill="#77c66e" stroke="#111" stroke-width="5"/>
-
-            <!-- eye -->
-            <circle cx="145" cy="50" r="8" fill="#111"/>
-            <circle cx="148" cy="47" r="2" fill="#fff"/>
-
-            <!-- nostril -->
-            <circle cx="183" cy="63" r="3.8" fill="#111"/>
-
-            <!-- top jaw -->
-            <g class="jaw-top">
-              <path d="M100 72
-                       C138 70, 175 70, 205 76
-                       C196 87, 172 92, 148 93
-                       L100 92Z"
-                    fill="#77c66e" stroke="#111" stroke-width="5"/>
-              <!-- teeth -->
-              <path d="M116 91 L122 101 L128 91
-                       M132 91 L138 101 L144 91
-                       M148 90 L154 100 L160 90
-                       M164 88 L170 98 L176 88"
-                    fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
-            </g>
-
-            <!-- bottom jaw -->
-            <g class="jaw-bottom">
-              <path d="M100 92
-                       C135 94, 169 98, 196 110
-                       C181 118, 159 121, 136 121
-                       L101 118Z"
-                    fill="#96de89" stroke="#111" stroke-width="5"/>
-              <!-- teeth -->
-              <path d="M116 94 L122 85 L128 94
-                       M132 96 L138 86 L144 96
-                       M148 99 L154 89 L160 99
-                       M164 103 L170 93 L176 103"
-                    fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
-            </g>
-
-            <!-- little arm -->
-            <path d="M95 103 C84 103, 78 108, 75 118"
-                  fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-          </svg>
+  <main class="stage">
+    <div class="title-wrap">
+      <h1 class="title">
+        <span class="line">RYAN THOMAS</span>
+        <span class="line">PERSONAL</span>
+        <span class="line portfolio-line" id="portfolioLine">
+          <span class="letter">P</span>
+          <span class="letter">O</span>
+          <span class="letter">R</span>
+          <span class="letter">T</span>
+          <span class="letter">F</span>
+          <span class="letter">O</span>
+          <span class="letter">L</span>
+          <span class="letter">I</span>
+          <span class="letter">O</span>
         </span>
-      </span>
-    </h1>
+      </h1>
+    </div>
 
-    <p class="subtext">A playful starting screen for your portfolio.</p>
+    <div class="bite-mark" id="biteMark">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
 
-    <button class="replay-btn" onclick="runEatAnimation()">Replay chomp</button>
-  </div>
+    <div class="dino-wrap" id="dinoWrap">
+      <svg class="dino" viewBox="0 0 760 780" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- neck/body -->
+        <path d="M492 292
+                 C560 324 610 394 628 478
+                 C651 588 633 700 584 770"
+              fill="none" stroke="#242222" stroke-width="7" stroke-linecap="round"/>
+
+        <path d="M417 364
+                 C458 428 474 509 458 612
+                 C448 680 421 733 381 777"
+              fill="none" stroke="#242222" stroke-width="7" stroke-linecap="round"/>
+
+        <!-- head outline -->
+        <path d="M112 334
+                 C70 302 70 240 116 203
+                 C151 175 205 162 264 163
+                 C325 164 378 181 418 211
+                 C470 249 485 313 454 363
+                 C422 416 354 438 274 430
+                 C209 424 151 392 112 334Z"
+              fill="var(--bg)" stroke="#242222" stroke-width="7" stroke-linejoin="round"/>
+
+        <!-- snout top -->
+        <path d="M86 280
+                 C137 246 197 232 274 231
+                 C337 230 392 241 456 272"
+              fill="none" stroke="#242222" stroke-width="5" stroke-linecap="round"/>
+
+        <!-- brow and skull lines -->
+        <path d="M235 178 C257 140 310 138 352 160" fill="none" stroke="#242222" stroke-width="5" stroke-linecap="round"/>
+        <path d="M270 171 C294 190 304 213 296 238" fill="none" stroke="#242222" stroke-width="4" stroke-linecap="round"/>
+        <path d="M322 172 C342 197 346 224 335 251" fill="none" stroke="#242222" stroke-width="4" stroke-linecap="round"/>
+        <path d="M375 198 C393 225 396 252 383 283" fill="none" stroke="#242222" stroke-width="4" stroke-linecap="round"/>
+
+        <!-- eye -->
+        <ellipse cx="332" cy="239" rx="21" ry="27" fill="none" stroke="#242222" stroke-width="5"/>
+        <circle cx="338" cy="241" r="8" fill="#242222"/>
+        <circle cx="342" cy="235" r="3" fill="var(--bg)"/>
+
+        <!-- nostril -->
+        <ellipse cx="135" cy="293" rx="10" ry="16" transform="rotate(-25 135 293)" fill="none" stroke="#242222" stroke-width="5"/>
+        <circle cx="137" cy="294" r="4" fill="#242222"/>
+
+        <!-- cheek -->
+        <path d="M393 293
+                 C370 310 344 318 310 318
+                 C281 318 251 312 217 302"
+              fill="none" stroke="#242222" stroke-width="4" stroke-linecap="round"/>
+
+        <!-- jaw group -->
+        <g class="jaw" id="jaw">
+          <path d="M128 342
+                   C172 379 244 398 327 391
+                   C380 386 421 366 455 335
+                   C451 382 416 423 359 449
+                   C282 485 190 460 136 409
+                   C112 386 106 360 128 342Z"
+                fill="var(--bg)" stroke="#242222" stroke-width="7" stroke-linejoin="round"/>
+
+          <path d="M137 356
+                   C177 389 245 407 321 399
+                   C365 395 404 378 443 347"
+                fill="none" stroke="#242222" stroke-width="4" stroke-linecap="round"/>
+
+          <!-- teeth bottom -->
+          <path d="M162 371 L174 405 L188 376
+                   M194 383 L207 418 L221 389
+                   M230 393 L244 429 L258 397
+                   M270 400 L283 435 L297 400
+                   M310 397 L322 430 L336 394
+                   M350 386 L360 416 L374 379"
+                fill="none" stroke="#242222" stroke-width="5" stroke-linejoin="round"/>
+        </g>
+
+        <!-- upper teeth -->
+        <path d="M150 322 L162 354 L176 323
+                 M184 326 L196 361 L210 327
+                 M218 329 L231 365 L245 331
+                 M254 331 L267 367 L281 331
+                 M292 329 L305 363 L319 327
+                 M330 322 L342 354 L356 317
+                 M367 310 L379 342 L393 303"
+              fill="none" stroke="#242222" stroke-width="5" stroke-linejoin="round"/>
+
+        <!-- arms -->
+        <path d="M412 529
+                 C375 515 337 524 315 558
+                 C297 587 303 626 334 646"
+              fill="none" stroke="#242222" stroke-width="7" stroke-linecap="round"/>
+
+        <path d="M333 646
+                 C310 653 291 647 280 630
+                 M333 646
+                 C337 621 349 602 369 589
+                 M333 646
+                 C354 659 374 655 392 635"
+              fill="none" stroke="#242222" stroke-width="6" stroke-linecap="round"/>
+
+        <path d="M500 529
+                 C535 536 559 560 563 592
+                 C568 631 546 663 510 671"
+              fill="none" stroke="#242222" stroke-width="7" stroke-linecap="round"/>
+
+        <path d="M510 671
+                 C491 660 483 643 488 621
+                 M510 671
+                 C525 648 542 636 564 635
+                 M510 671
+                 C532 686 553 684 571 670"
+              fill="none" stroke="#242222" stroke-width="6" stroke-linecap="round"/>
+
+        <!-- texture/scales -->
+        <path d="M230 208 C237 199 247 197 258 204" fill="none" stroke="#242222" stroke-width="3" stroke-linecap="round"/>
+        <path d="M190 222 C199 216 209 215 219 221" fill="none" stroke="#242222" stroke-width="3" stroke-linecap="round"/>
+        <path d="M148 245 C155 239 163 238 171 244" fill="none" stroke="#242222" stroke-width="3" stroke-linecap="round"/>
+        <path d="M404 250 C413 245 422 246 429 253" fill="none" stroke="#242222" stroke-width="3" stroke-linecap="round"/>
+        <path d="M388 220 C398 214 408 215 416 222" fill="none" stroke="#242222" stroke-width="3" stroke-linecap="round"/>
+
+        <circle cx="222" cy="262" r="3" fill="#242222"/>
+        <circle cx="250" cy="275" r="2.5" fill="#242222"/>
+        <circle cx="286" cy="269" r="2.5" fill="#242222"/>
+        <circle cx="180" cy="285" r="2.5" fill="#242222"/>
+        <circle cx="390" cy="335" r="2.5" fill="#242222"/>
+        <circle cx="430" cy="316" r="2.5" fill="#242222"/>
+        <circle cx="475" cy="430" r="2.5" fill="#242222"/>
+        <circle cx="516" cy="480" r="2.5" fill="#242222"/>
+        <circle cx="548" cy="545" r="2.5" fill="#242222"/>
+
+        <!-- neck detail -->
+        <path d="M485 334 C509 390 513 452 499 521" fill="none" stroke="#242222" stroke-width="4" stroke-linecap="round"/>
+        <path d="M535 376 C551 441 548 505 525 574" fill="none" stroke="#242222" stroke-width="4" stroke-linecap="round"/>
+        <path d="M574 450 C586 525 574 606 535 681" fill="none" stroke="#242222" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </main>
+
+  <div class="scroll-hint" id="scrollHint">Scroll</div>
 
   <script>
-    const portfolioWord = document.getElementById("portfolioWord");
-    const dino = document.getElementById("dino");
+    const dino = document.getElementById("dinoWrap");
+    const jaw = document.getElementById("jaw");
+    const letters = [...document.querySelectorAll(".letter")];
+    const biteMark = document.getElementById("biteMark");
+    const scrollHint = document.getElementById("scrollHint");
 
-    function resetAnimation() {
-      portfolioWord.classList.remove("eaten");
-      dino.classList.remove("chomp");
-    }
-
-    function runEatAnimation() {
-      resetAnimation();
-
-      setTimeout(() => {
-        dino.classList.add("chomp");
-      }, 500);
-
-      setTimeout(() => {
-        portfolioWord.classList.add("eaten");
-      }, 640);
-
-      setTimeout(() => {
-        dino.classList.remove("chomp");
-      }, 900);
-    }
-
-    // run once on load
-    window.addEventListener("load", () => {
-      setTimeout(runEatAnimation, 500);
+    letters.forEach((letter, index) => {
+      letter.style.setProperty("--x", [-120, -85, -40, 25, 70, 115, 60, -70, 130][index]);
+      letter.style.setProperty("--y", [-35, 70, -90, 105, -50, 95, 140, -120, 25][index]);
+      letter.style.setProperty("--r", [-28, 44, -65, 32, -38, 72, 95, -80, 45][index]);
     });
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function updateScene() {
+      const maxScroll = document.body.scrollHeight - window.innerHeight;
+      const progress = clamp(window.scrollY / maxScroll, 0, 1);
+
+      scrollHint.classList.toggle("hidden", progress > 0.04);
+
+      /*
+        Dinosaur movement:
+        - starts low/right
+        - rises into the word
+        - moves left slightly while chewing
+      */
+      const rise = progress * 100;
+      const x = 38 - progress * 48;
+      const y = 72 - rise * 1.18;
+      const scale = 0.86 + progress * 0.24;
+
+      dino.style.transform = `
+        translate3d(${x}vw, ${y}vh, 0)
+        scale(${scale})
+      `;
+
+      /*
+        Jaw movement:
+        Opens around the eating zone, then closes.
+      */
+      const chewZone = progress > 0.32 && progress < 0.78;
+      const jawOpen = chewZone ? Math.sin(progress * 58) * 9 + 12 : 0;
+      jaw.style.transform = `rotate(${jawOpen}deg)`;
+
+      /*
+        Bite mark follows mouth area.
+      */
+      if (progress > 0.38 && progress < 0.76) {
+        biteMark.classList.add("active");
+        biteMark.style.left = `${54 - progress * 15}%`;
+        biteMark.style.top = `${63 - progress * 3}%`;
+      } else {
+        biteMark.classList.remove("active");
+      }
+
+      /*
+        Eat the PORTFOLIO letters one by one.
+      */
+      const eatStart = 0.38;
+      const eatEnd = 0.82;
+      const eatProgress = clamp((progress - eatStart) / (eatEnd - eatStart), 0, 1);
+      const eatenCount = Math.floor(eatProgress * (letters.length + 1));
+
+      letters.forEach((letter, index) => {
+        if (index < eatenCount) {
+          letter.classList.add("eaten");
+        } else {
+          letter.classList.remove("eaten");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateScene);
+    window.addEventListener("resize", updateScene);
+    window.addEventListener("load", updateScene);
   </script>
 </body>
 </html>
